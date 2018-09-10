@@ -34,6 +34,24 @@ public:
 	char nonce1[64];
 };
 
+class YAAMP_LN_INVOICE: public YAAMP_OBJECT
+{
+public:
+	char invoice[2048];
+};
+
+inline void ln_invoice_delete(YAAMP_OBJECT *object)
+{
+	YAAMP_LN_INVOICE *invoice = (YAAMP_LN_INVOICE *)object;
+	delete invoice;
+}
+
+YAAMP_LN_INVOICE *ln_invoice_find(char *invoice);
+void ln_invoice_add(YAAMP_CLIENT *client, bool valid, char *invoice, int error_number);
+
+void ln_invoice_write(YAAMP_DB *db);
+void ln_invoice_prune(YAAMP_DB *db);
+
 inline void share_delete(YAAMP_OBJECT *object)
 {
 	YAAMP_SHARE *share = (YAAMP_SHARE *)object;
