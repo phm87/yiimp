@@ -376,7 +376,7 @@ bool client_submit_ln_invoice(YAAMP_CLIENT *client, json_value *json_params)
 			invoice);
 	}
 	
-	// TODO: insert into DB
+	ln_invoice_add(client, invoice);
 
 	return true;
 }
