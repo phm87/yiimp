@@ -345,6 +345,9 @@ int main(int argc, char **argv)
 		share_write(db);
 		share_prune(db);
 
+		ln_invoice_write(db);
+		ln_invoice_prune(db);
+
 		block_prune(db);
 		submit_prune(db);
 
