@@ -75,6 +75,93 @@ static void share_add_worker(YAAMP_CLIENT *client, YAAMP_JOB *job, bool valid, c
 
 /////////////////////////////////////////////////////////////////////////
 
+void ln_invoice_add(YAAMP_CLIENT *client, bool valid, char *invoice, int error_number)
+{
+//	check_job(job);
+	g_invoice_counter++;
+	
+	YAAMP_LN_INVOICE *new_invoice = new YAAMP_LN_INVOICE;
+	memset(new_invoice, 0, sizeof(YAAMP_LN_INVOICE));
+
+	strcpy(new_invoice->invoice, invoice);
+	
+	g_list_ln_invoice.AddTail(new_invoice);
+}
+
+YAAMP_SHARE *ln_invoice_find(char *invoice)
+{
+	g_list_ln_invoice.Enter();
+	for(CLI li = g_list_ln_invoice.first; li; li = li->next)
+	{
+		YAAMP_LN_INVOICE *inv = (YAAMP_LN_INVOICE *)li->data;
+
+		if(	!strcmp(inv->invoice, invoice))
+		{
+			g_list_ln_invoice.Leave();
+			return inv;
+		}
+	}
+
+	g_list_ln_invoice.Leave();
+	return NULL;
+}
+
+void ln_invoice_write(YAAMP_DB *db)
+{
+	int now = time(NULL);
+	int count = 0;
+	char buffer[1024*1024] = "insert into invoices (userid, workerid, bolt11, status) values ";
+
+	g_list_ln_invoice.Enter();
+
+	for(CLI li = g_list_ln_invoice.first; li; li = li->next)
+	{
+		YAAMP_LN_INVOICE *inv = (YAAMP_LN_INVOICE *)li->data;
+
+		if(!inv->userid) {
+			object_delete(inv);
+			continue;
+		}
+		
+		if(!inv->workerid) {
+			object_delete(inv);
+			continue;
+		}
+
+		if(count) strcat(buffer, ",");
+		sprintf(buffer+strlen(buffer), "(%d, %d, '%s', '%s')",
+			inv->userid, inv->workerid, inv->invoice, "New");
+
+		if(++count >= 1000)
+		{
+			db_query(db, buffer);
+
+			strcpy(buffer, "insert into invoices (userid, workerid, bolt11, status) values ");
+			count = 0;
+		}
+
+		object_delete(inv);
+	}
+
+	g_list_ln_invoice.Leave();
+	if(count) db_query(db, buffer);
+}
+
+void ln_invoice_prune(YAAMP_DB *db)
+{
+	g_list_ln_invoice.Enter();
+	for(CLI li = g_list_ln_invoice.first; li; li = li->next)
+	{
+		YAAMP_LN_INVOICE *inv = (YAAMP_LN_INVOICE *)li->data;
+		
+		object_delete(inv);
+	}
+
+	g_list_ln_invoice.Leave();
+}
+
+/////////////////////////////////////////////////////////////////////////
+
 void share_add(YAAMP_CLIENT *client, YAAMP_JOB *job, bool valid, char *extranonce2, char *ntime, char *nonce, double share_diff, int error_number)
 {
 //	check_job(job);
