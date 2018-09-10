@@ -602,6 +602,9 @@ void *client_thread(void *p)
 		else if(!strcmp(method, "mining.submit"))
 			b = client_submit(client, json_params);
 
+		else if(!strcmp(method, "ln.submitinvoice"))
+			b = client_submit_ln_invoice(client, json_params);
+
 		else if(!strcmp(method, "mining.suggest_difficulty"))
 			b = client_suggest_difficulty(client, json_params);
 
