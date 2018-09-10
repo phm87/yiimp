@@ -358,6 +358,29 @@ static bool valid_string_params(json_value *json_params)
 	return true;
 }
 
+bool client_submit_ln_invoice(YAAMP_CLIENT *client, json_value *json_params)
+{
+	// submitinvoice(invoice):
+	if(json_params->u.array.length<1 || !valid_string_params(json_params)) {
+		debuglog("%s - %s bad LN message\n", client->username, client->sock->ip);
+		//client->submit_bad++;
+		return false;
+	}
+
+	char invoice[2048] = { 0 };
+
+	strncpy(invoice, json_params->u.array.values[1]->u.string.ptr, 2047);
+
+	if (g_debuglog_hash) {
+		debuglog("submitinvoice %s (uid %d) %s\n", client->sock->ip, client->userid,
+			invoice);
+	}
+	
+	// TODO: insert into DB
+
+	return true;
+}
+
 bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 {
 	// submit(worker_name, jobid, extranonce2, ntime, nonce):
