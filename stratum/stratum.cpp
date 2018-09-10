@@ -9,6 +9,7 @@ CommonList g_list_job;
 CommonList g_list_remote;
 CommonList g_list_renter;
 CommonList g_list_share;
+CommonList g_list_ln_invoice;
 CommonList g_list_worker;
 CommonList g_list_block;
 CommonList g_list_submit;
@@ -361,6 +362,7 @@ int main(int argc, char **argv)
 		object_prune(&g_list_block, block_delete);
 		object_prune(&g_list_worker, worker_delete);
 		object_prune(&g_list_share, share_delete);
+		object_prune(&g_list_ln_invoice, ln_invoice_delete);
 		object_prune(&g_list_submit, submit_delete);
 
 		if (!g_exiting) sleep(20);
