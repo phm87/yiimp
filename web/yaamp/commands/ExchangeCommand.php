@@ -147,11 +147,11 @@ class ExchangeCommand extends CConsoleCommand
 			if (!is_object($balance)) echo "bittrex error\n";
 			else echo("bittrex btc: ".json_encode($balance->result)."\n");
 		}
-		if (!empty(EXCH_BITZ_KEY) && !empty(EXCH_BITZ_SECRET) && !empty(EXCH_BITZ_TRADEPWD)) {
+		if (!empty(EXCH_BITZ_KEY) && !empty(EXCH_BITZ_SECRET)) {
 			$bitz = new bitz();
-			$balance = $bitz->getUserAssets()->data->{'btc_total'};
+			$balance = json_decode($bitz->getUserAssets())->data->{'btc_total'};
 			if (!is_object($balance)) echo "bitz error\n";
-			else echo("bitz btc_total: ".json_encode($balance->result)."\n");
+			else echo("bitz btc_total: ".json_encode($balance)."\n");
 		}
 		if (!empty(EXCH_BLEUTRADE_KEY)) {
 			$balance = bleutrade_api_query('account/getbalances','&currencies=BTC');
