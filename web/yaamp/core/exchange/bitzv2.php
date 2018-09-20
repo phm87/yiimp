@@ -7,11 +7,16 @@
 
 class bitz
 {
-    protected $secretKey = 'EXCH_BITZ_SECRET';
+    require_once('/etc/yiimp/keys.php');
+	if (!defined('EXCH_BITZ_KEY')) define('EXCH_BITZ_KEY', '');
+    if (!defined('EXCH_BITZ_SECRET')) define('EXCH_BITZ_SECRET', '');
+    if (!defined('EXCH_BITZ_TRADEPWD')) define('EXCH_BITZ_TRADEPWD', '');
+    
+    protected $secretKey = EXCH_BITZ_SECRET;
 
-    protected $apiKey = 'EXCH_BITZ_KEY';
+    protected $apiKey = EXCH_BITZ_KEY;
 
-    protected $tradePwd = 'EXCH_BITZ_TRADEPWD';
+    protected $tradePwd = EXCH_BITZ_TRADEPWD;
 
     protected $base_url  = 'https://apiv2.bitz.com';
 
