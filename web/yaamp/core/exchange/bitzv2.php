@@ -5,12 +5,14 @@
  * https://github.com/Shiva-ly/api-dependent-file
  */
 
+
+require_once('/etc/yiimp/keys.php');
+if (!defined('EXCH_BITZ_KEY')) define('EXCH_BITZ_KEY', '');
+if (!defined('EXCH_BITZ_SECRET')) define('EXCH_BITZ_SECRET', '');
+if (!defined('EXCH_BITZ_TRADEPWD')) define('EXCH_BITZ_TRADEPWD', '');
+
 class bitz
 {
-    require_once('/etc/yiimp/keys.php');
-	if (!defined('EXCH_BITZ_KEY')) define('EXCH_BITZ_KEY', '');
-    if (!defined('EXCH_BITZ_SECRET')) define('EXCH_BITZ_SECRET', '');
-    if (!defined('EXCH_BITZ_TRADEPWD')) define('EXCH_BITZ_TRADEPWD', '');
     
     protected $secretKey = EXCH_BITZ_SECRET;
 
