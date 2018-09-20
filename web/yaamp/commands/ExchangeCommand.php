@@ -149,7 +149,7 @@ class ExchangeCommand extends CConsoleCommand
 		}
 		if (!empty(EXCH_BITZ_KEY) && !empty(EXCH_BITZ_SECRET)) {
 			$bitz = new bitz();
-			$balance = json_decode($bitz->getUserAssets())->data->{'btc_total'};
+			$balance = json_decode($bitz->getUserAssets())->data;
 			if (!is_object($balance)) echo "bitz error\n";
 			else echo("bitz btc_total: ".json_encode($balance)."\n");
 		}
