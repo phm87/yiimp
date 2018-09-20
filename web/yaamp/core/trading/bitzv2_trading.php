@@ -8,6 +8,8 @@ function doBitzCancelOrder($OrderID=false)
 
 function doBitzTrading($quick=false)
 {
+	if (empty(EXCH_BITZ_KEY) || empty(EXCH_BITZ_SECRET)) return;
+	
 	$exchange = 'bitz';
 	$updatebalances = true;
  	if (exchange_get($exchange, 'disabled')) return;
