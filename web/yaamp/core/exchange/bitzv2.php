@@ -7,11 +7,11 @@
 
 class bitz
 {
-    protected $secretKey = '';
+    protected $secretKey = 'EXCH_BITZ_SECRET';
 
-    protected $apiKey = '';
+    protected $apiKey = 'EXCH_BITZ_KEY';
 
-    protected $tradePwd = '';
+    protected $tradePwd = 'EXCH_BITZ_TRADEPWD';
 
     protected $base_url  = 'https://apiv2.bitz.com';
 
