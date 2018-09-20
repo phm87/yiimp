@@ -12,8 +12,8 @@ function doBitzTrading($quick=false)
 	$updatebalances = true;
  	if (exchange_get($exchange, 'disabled')) return;
   
-  $bitz = new bitz();
-  $data = json_decode($bitz->getUserAssets())->data->info;
+	$bitz = new bitz();
+	$data = json_decode($bitz->getUserAssets())->data->info;
 
 	if (!is_array($data) || empty($data)) return;
  	$savebalance = getdbosql('db_balances', "name='$exchange'");
