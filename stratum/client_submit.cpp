@@ -389,32 +389,6 @@ bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 	string_lower(ntime);
 	string_lower(nonce);
 
-	if (json_params->u.array.length == 6) {
-		if (strstr(g_stratum_algo, "phi")) {
-			// lux optional field, smart contral root hashes (not mandatory on shares submit)
-			strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
-			string_lower(extra);
-		} else {
-			// heavycoin vote
-			strncpy(vote, json_params->u.array.values[5]->u.string.ptr, 7);
-			string_lower(vote);
-		}
-		
-		if (strstr(vote,"ln=") || strstr(extra,"ln="))	{
-			// the 6th field contains the ID of a LN invoice previously entered into the pool
-			strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
-			strcpy(extra, &extra[3]);
-			ln_invoice = atoi(extra);
-			debuglog("Share for LN invoice: %d\n",ln_invoice);
-			// the work done for the invoice is saved into the DB after all usual checks of the share
-		}
-	}
-
-	if (g_debuglog_hash) {
-		debuglog("submit %s (uid %d) %d, %s, t=%s, n=%s, extra=%s\n", client->sock->ip, client->userid,
-			jobid, extranonce2, ntime, nonce, extra);
-	}
-
 	YAAMP_JOB *job = (YAAMP_JOB *)object_find(&g_list_job, jobid, true);
 	if(!job)
 	{
@@ -428,6 +402,35 @@ bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 		object_unlock(job);
 
 		return true;
+	}
+	
+	if (json_params->u.array.length == 6) {
+		if (job->coind && (!strcmp("LUX", job->coind->symbol) || !strcmp("LUX", job->coind->symbol2))) {
+			// lux optional field, smart contral root hashes (not mandatory on shares submit)
+			strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
+			string_lower(extra);
+		} else {
+			strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
+			if (strstr(extra,"ln="))	{
+				// the 6th field contains the ID of a LN invoice previously entered into the pool
+				strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
+				strcpy(extra, &extra[3]);
+				ln_invoice = atoi(extra);
+				debuglog("Share for LN invoice: %d\n",ln_invoice);
+				// the work done for the invoice is saved into the DB after all usual checks of the share
+			}
+			else	{
+				// heavycoin vote
+				strncpy(vote, json_params->u.array.values[5]->u.string.ptr, 7);
+				string_lower(vote);
+			}
+			extra[0] = '\0';
+		}
+	}
+
+	if (g_debuglog_hash) {
+		debuglog("submit %s (uid %d) %d, %s, t=%s, n=%s, extra=%s\n", client->sock->ip, client->userid,
+			jobid, extranonce2, ntime, nonce, extra);
 	}
 
 	bool is_decred = job->coind && !strcmp("DCR", job->coind->rpcencoding);
