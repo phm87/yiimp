@@ -403,9 +403,8 @@ bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 		if (strstr(vote,"ln=") || strstr(extra,"ln="))	{
 			// the 6th field contains the ID of a LN invoice previously entered into the pool
 			strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
-			size_t last_index = extra.find_last_not_of("0123456789");
-			string result = extra.substr(last_index + 1);
-			ln_invoice = atoi(result);
+			strcpy(extra, &extra[3]);
+			ln_invoice = atoi(extra);
 			debuglog("Share for LN invoice: %d\n",ln_invoice);
 			// the work done for the invoice is saved into the DB after all usual checks of the share
 		}
