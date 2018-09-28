@@ -326,7 +326,7 @@ void client_submit_error(YAAMP_CLIENT *client, YAAMP_JOB *job, int id, const cha
 	else
 	{
 		client_send_error(client, id, message);
-		share_add(client, job, false, extranonce2, ntime, nonce, 0, id);
+		share_add(client, job, false, extranonce2, ntime, nonce, 0, id, 0); // LN: enhance LN invoice handling in this case of error
 
 		client->submit_bad++;
 		if (g_debuglog_hash) {
