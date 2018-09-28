@@ -372,6 +372,7 @@ bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 	char nonce[80] = { 0 };
 	char ntime[32] = { 0 };
 	char vote[8] = { 0 };
+	int ln_invoice = 0;
 
 	if (strlen(json_params->u.array.values[1]->u.string.ptr) > 32) {
 		clientlog(client, "bad json, wrong jobid len");
@@ -397,6 +398,16 @@ bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 			// heavycoin vote
 			strncpy(vote, json_params->u.array.values[5]->u.string.ptr, 7);
 			string_lower(vote);
+		}
+		
+		if (strstr(vote,"ln=") || strstr(extra,"ln="))	{
+			// the 6th field contains the ID of a LN invoice previously entered into the pool
+			strncpy(extra, json_params->u.array.values[5]->u.string.ptr, 128);
+			size_t last_index = extra.find_last_not_of("0123456789");
+			string result = extra.substr(last_index + 1);
+			ln_invoice = atoi(result);
+			debuglog("Share for LN invoice: %d\n",ln_invoice);
+			// the work done for the invoice is saved into the DB after all usual checks of the share
 		}
 	}
 
@@ -551,7 +562,7 @@ bool client_submit(YAAMP_CLIENT *client, json_value *json_params)
 				jobid, extranonce2, ntime, nonce, share_diff, client->difficulty_actual);
 	}
 
-	share_add(client, job, true, extranonce2, ntime, nonce, share_diff, 0);
+	share_add(client, job, true, extranonce2, ntime, nonce, share_diff, 0, ln_invoice);
 	object_unlock(job);
 
 	return true;
