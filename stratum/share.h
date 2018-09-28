@@ -32,6 +32,7 @@ public:
 	char ntime[32];
 	char nonce[64];
 	char nonce1[64];
+	int invoice;
 };
 
 inline void share_delete(YAAMP_OBJECT *object)
