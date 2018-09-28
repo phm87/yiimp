@@ -75,7 +75,7 @@ static void share_add_worker(YAAMP_CLIENT *client, YAAMP_JOB *job, bool valid, c
 
 /////////////////////////////////////////////////////////////////////////
 
-void share_add(YAAMP_CLIENT *client, YAAMP_JOB *job, bool valid, char *extranonce2, char *ntime, char *nonce, double share_diff, int error_number)
+void share_add(YAAMP_CLIENT *client, YAAMP_JOB *job, bool valid, char *extranonce2, char *ntime, char *nonce, double share_diff, int error_number, int invoice)
 {
 //	check_job(job);
 	g_shares_counter++;
@@ -89,6 +89,7 @@ void share_add(YAAMP_CLIENT *client, YAAMP_JOB *job, bool valid, char *extranonc
 	strcpy(share->ntime, ntime);
 	strcpy(share->nonce, nonce);
 	strcpy(share->nonce1, client->extranonce1);
+	share->invoice = invoice;
 
 	g_list_share.AddTail(share);
 }
