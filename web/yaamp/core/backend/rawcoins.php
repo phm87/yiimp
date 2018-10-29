@@ -460,7 +460,7 @@ function updateRawCoin($marketname, $symbol, $name='unknown')
 		debuglog("weird symbol $symbol from $marketname");
 		return;
 		}
-	if (!preg_match('/[^A-Za-z0-9_\$]/', $name)) {
+	if (!preg_match('/[^A-Za-z0-9_\s\$]/', $name)) {
 		debuglog("weird name $name for symbol $symbol from $marketname");
 		return;
 		}
