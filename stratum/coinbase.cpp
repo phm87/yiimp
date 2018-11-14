@@ -369,11 +369,25 @@ void coinbase_create(YAAMP_COIND *coind, YAAMP_JOB_TEMPLATE *templ, json_value *
 		bool superblocks_enabled = json_get_bool(json_result, "superblocks_enabled");
 		json_value* superblock = json_get_array(json_result, "superblock");
 		json_value* masternode = json_get_object(json_result, "masternode");
+		bool founder_reward_enforced = json_get_bool("founder_reward_enforced");
 		if(!masternode && json_get_bool(json_result, "masternode_payments")) {
 			coind->oldmasternodes = true;
 			debuglog("%s is using old masternodes rpc keys\n", coind->symbol);
 			return;
 		}
+		if (founder_reward_enforced)	{
+			char charity_payee[256] = { 0 };
+			json_value* founderreward = json_get_object(json_result, "founderreward");
+            		const char *payee = json_get_string(founderreward, "founderpayee");
+            		if (payee) snprintf(charity_payee, 255, "%s", payee);
+            		json_int_t charity_amount = json_get_int(founderreward, "amount");
+            		npayees++;
+            		available -= charity_amount;
+            		coind->charity_amount = charity_amount;
+            		base58_decode(charity_payee, script_payee);
+           		job_pack_tx(coind, script_dests, charity_amount, script_payee);
+		}
+		
 		if(coind->charity_percent) {
             		char charity_payee[256] = { 0 };
             		const char *payee = json_get_string(json_result, "payee");
