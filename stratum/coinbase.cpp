@@ -251,17 +251,9 @@ void coinbase_create(YAAMP_COIND *coind, YAAMP_JOB_TEMPLATE *templ, json_value *
         base58_decode("XWfdnGbXnBxeegrPJEvnYaNuwf6DXCruMX", script_payee);
         job_pack_tx(coind, templ->coinb2, 7.5 * 100000000, script_payee);
 
-<<<<<<< HEAD
         base58_decode("XQ4WEZTFP83gVhhLBKavwopz7U84JucR8w", script_payee);
         job_pack_tx(coind, templ->coinb2, 1.5 * 100000000, script_payee);
 
-=======
-            base58_decode("XWfdnGbXnBxeegrPJEvnYaNuwf6DXCruMX", script_payee);
-            job_pack_tx(coind, templ->coinb2, 7.5 * 100000000, script_payee);
-
-            base58_decode("XQ4WEZTFP83gVhhLBKavwopz7U84JucR8w", script_payee);
-            job_pack_tx(coind, templ->coinb2, 1.5 * 100000000, script_payee);
->>>>>>> f5c408561000da95092daf70f8e603fff05268ea
 
         strcat(templ->coinb2, "00000000"); // locktime
         coind->reward = (double)available/100000000*coind->reward_mul;
