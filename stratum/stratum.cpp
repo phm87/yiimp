@@ -126,10 +126,6 @@ YAAMP_ALGO g_algos[] =
 	{"x22i", x22i_hash, 1, 0, 0},
 	{"x21s", x21s_hash, 0x100, 0, 0},
 
-
-	{"binarium-v1", Binarium_hash_v1_hash, 1, 0, 0},
-
-
 	{"pipe", pipe_hash, 1,0,0},
 
 	{"x11evo", x11evo_hash, 1, 0, 0},
