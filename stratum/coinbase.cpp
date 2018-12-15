@@ -260,8 +260,7 @@ void coinbase_create(YAAMP_COIND *coind, YAAMP_JOB_TEMPLATE *templ, json_value *
 
         return;
     }
-
-    else if(strcmp(coind->symbol, "GLT") == 0)
+    else if ((strcmp(coind->symbol, "GLT") == 0)||(strcmp(coind->symbol2, "GLT") == 0))
 	{
 		char script_dests[2048] = { 0 };
 		char script_payee[128] = { 0 };
