@@ -143,6 +143,14 @@ function BackendBlockFind1($coinid = NULL)
 			continue;
 		}
 
+                if(!$tx || !isset($tx['confirmations']))
+                {
+                        debuglog("CONF: ".$coin->symbol." tx['confirmations'] is not set");
+                        $db_block->confirmations = 1;
+                        $db_block->save();
+                        continue;
+                }
+		
 		$db_block->txhash = $block['tx'][0];
 		$db_block->category = 'immature';						//$tx['details'][0]['category'];
 		$db_block->amount = $tx['details'][0]['amount'];
@@ -250,6 +258,14 @@ function BackendBlocksUpdate($coinid = NULL)
 			}
 			continue;
 		}
+
+                if(!$tx || !isset($tx['confirmations']))
+                {
+                        debuglog("CONF: ".$coin->symbol." tx['confirmations'] is not set");
+                        $db_block->confirmations = 1;
+                        $db_block->save();
+                        continue;
+                }
 
 		$block->confirmations = $tx['confirmations'];
 
