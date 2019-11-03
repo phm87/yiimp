@@ -242,10 +242,10 @@ void db_update_coinds(YAAMP_DB *db)
 
 		coind->rpc.ssl = 0;
 		// deprecated method to set ssl and cert (before db specific fields)
-		if(false) {
+		if(true) {
 			char buffer[1024];
 			char cert[1024];
-			//strcpy(buffer, row[2]);
+			strcpy(buffer, "127.0.0.1");
 			// sample ssl host : "https://mycert@127.0.0.1"
 			if (strstr(buffer, "https://") != NULL) {
 				//strcpy(buffer, row[2] + 8);
