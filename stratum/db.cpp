@@ -245,10 +245,10 @@ void db_update_coinds(YAAMP_DB *db)
 		if(false) {
 			char buffer[1024];
 			char cert[1024];
-			strcpy(buffer, row[2]);
+			//strcpy(buffer, row[2]);
 			// sample ssl host : "https://mycert@127.0.0.1"
 			if (strstr(buffer, "https://") != NULL) {
-				strcpy(buffer, row[2] + 8);
+				//strcpy(buffer, row[2] + 8);
 				if (strstr(buffer, "@") != NULL) {
 					int p = (strstr(buffer, "@") - buffer);
 					strcpy(cert, buffer); cert[p] = '\0';
