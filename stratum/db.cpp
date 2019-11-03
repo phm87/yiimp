@@ -216,7 +216,7 @@ void db_update_coinds(YAAMP_DB *db)
 
 			coind->newcoind = true;
 			coind->newblock = true;
-			coind->id = atoi(row[0]);
+			coind->id = atoi("2999");
 			coind->aux.coind = coind;
 		}
 		else
