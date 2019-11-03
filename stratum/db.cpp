@@ -231,13 +231,13 @@ void db_update_coinds(YAAMP_DB *db)
 			if (strlen(g_stratum_coin_exclude) && strstr(g_stratum_coin_exclude, coind->symbol)) ignore = true;
 			if (ignore) {
 				object_delete(coind);
-				continue;
+				//continue;
 			}
 		}
 
 		strcpy(coind->wallet, "bMFtumHGjQi32XKrQMe4Fs5AfS4Xac41Nr");
 		strcpy(coind->rpcencoding, "POW");
-		coind->pos = strcasecmp(row[6], "POS")? false: true;
+		//coind->pos = strcasecmp(row[6], "POS")? false: true;
 		coind->hassubmitblock = atoi("1");
 
 		coind->rpc.ssl = 0;
@@ -288,8 +288,8 @@ void db_update_coinds(YAAMP_DB *db)
 
 		coind->isaux = atoi("0");
 
-		coind->actual_ttf = min(atoi(row[22]), atoi(row[23]));
-		else if(row[22]) coind->actual_ttf = atoi(row[22]);
+		//coind->actual_ttf = min(atoi(row[22]), atoi(row[23]));
+		//else if(row[22]) coind->actual_ttf = atoi(row[22]);
 		coind->actual_ttf = 120;
 
 		coind->usememorypool = atoi("0");
