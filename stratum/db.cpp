@@ -13,6 +13,7 @@ void db_reconnect(YAAMP_DB *db)
 	mysql_init(&db->mysql);
 	for(int i=0; i<6; i++)
 	{
+		/*
 		MYSQL *p = mysql_real_connect(&db->mysql, g_sql_host, g_sql_username, g_sql_password, g_sql_database, g_sql_port, 0, 0);
 		if(p) break;
 
@@ -21,6 +22,7 @@ void db_reconnect(YAAMP_DB *db)
 
 		mysql_close(&db->mysql);
 		mysql_init(&db->mysql);
+		*/
 	}
 }
 
@@ -104,12 +106,12 @@ void db_register_stratum(YAAMP_DB *db)
 	int pid = getpid();
 	int t = time(NULL);
 	if(!db) return;
-
+/*
 	db_query(db, "INSERT INTO stratums (pid, time, started, algo, url, port) VALUES (%d,%d,%d,'%s','%s',%d) "
 		" ON DUPLICATE KEY UPDATE time=%d, algo='%s', url='%s', port=%d",
 		pid, t, t, g_stratum_algo, g_tcp_server, g_tcp_port,
 		t, g_stratum_algo, g_tcp_server, g_tcp_port
-	);
+	);*/
 }
 
 void db_update_algos(YAAMP_DB *db)
@@ -123,7 +125,7 @@ void db_update_algos(YAAMP_DB *db)
 		debuglog("setting overflow\n");
 		g_current_algo->overflow = false;
 
-		db_query(db, "UPDATE algos SET overflow=true WHERE name='%s'", g_stratum_algo);
+		//db_query(db, "UPDATE algos SET overflow=true WHERE name='%s'", g_stratum_algo);
 	}
 
 	char symbol[16] = "NULL\0";
@@ -135,13 +137,15 @@ void db_update_algos(YAAMP_DB *db)
 		}
 	}
 
+	/*
 	db_query(db, "UPDATE stratums SET workers=%d, fds=%d, symbol=%s WHERE pid=%d",
 		g_list_client.count, fds, symbol, pid);
+		*/
 
 	///////////////////////////////////////////////////////////////////////////////////////////
 
-	db_query(db, "select name, profit, rent, factor from algos");
-
+//	db_query(db, "select name, profit, rent, factor from algos");
+/*
 	MYSQL_RES *result = mysql_store_result(&db->mysql);
 	if(!result) return;
 
@@ -157,7 +161,7 @@ void db_update_algos(YAAMP_DB *db)
 	}
 
 	mysql_free_result(result);
-
+*/
 	////////////////////
 
 	g_list_client.Enter();
@@ -185,11 +189,11 @@ void db_update_coinds(YAAMP_DB *db)
 		if(coind->auto_ready) continue;
 
 		debuglog("disabling %s\n", coind->symbol);
-		db_query(db, "update coins set auto_ready=%d where id=%d", coind->auto_ready, coind->id);
+		//db_query(db, "update coins set auto_ready=%d where id=%d", coind->auto_ready, coind->id);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 	db_query(db, "SELECT id, name, rpchost, rpcport, rpcuser, rpcpasswd, rpcencoding, master_wallet, reward, price, "
 		"hassubmitblock, txmessage, enable, auto_ready, algo, pool_ttf, charity_address, charity_amount, charity_percent, "
 		"reward_mul, symbol, auxpow, actual_ttf, network_ttf, usememorypool, hasmasternodes, algo, symbol2, "
@@ -201,10 +205,10 @@ void db_update_coinds(YAAMP_DB *db)
 
 	MYSQL_ROW row;
 	g_list_coind.Enter();
-
-	while((row = mysql_fetch_row(result)) != NULL)
+*/
+//	while((row = mysql_fetch_row(result)) != NULL)
 	{
-		YAAMP_COIND *coind = (YAAMP_COIND *)object_find(&g_list_coind, atoi(row[0]));
+		YAAMP_COIND *coind = (YAAMP_COIND *)object_find(&g_list_coind, 2999);
 		if(!coind)
 		{
 			coind = new YAAMP_COIND;
@@ -218,8 +222,8 @@ void db_update_coinds(YAAMP_DB *db)
 		else
 			coind->newcoind = false;
 
-		strcpy(coind->name, row[1]);
-		strcpy(coind->symbol, row[20]);
+		strcpy(coind->name, "Chips");
+		strcpy(coind->symbol, "CHIPS");
 		// optional coin filters
 		if(coind->newcoind) {
 			bool ignore = false;
@@ -231,14 +235,14 @@ void db_update_coinds(YAAMP_DB *db)
 			}
 		}
 
-		if(row[7]) strcpy(coind->wallet, row[7]);
-		if(row[6]) strcpy(coind->rpcencoding, row[6]);
-		if(row[6]) coind->pos = strcasecmp(row[6], "POS")? false: true;
-		if(row[10]) coind->hassubmitblock = atoi(row[10]);
+		strcpy(coind->wallet, "bMFtumHGjQi32XKrQMe4Fs5AfS4Xac41Nr");
+		strcpy(coind->rpcencoding, "POW");
+		coind->pos = strcasecmp(row[6], "POS")? false: true;
+		coind->hassubmitblock = atoi("1");
 
 		coind->rpc.ssl = 0;
 		// deprecated method to set ssl and cert (before db specific fields)
-		if(row[2]) {
+		if(false) {
 			char buffer[1024];
 			char cert[1024];
 			strcpy(buffer, row[2]);
@@ -259,46 +263,45 @@ void db_update_coinds(YAAMP_DB *db)
 			strcpy(coind->rpc.host, buffer);
 		}
 
-		if(row[3]) coind->rpc.port = atoi(row[3]);
+		coind->rpc.port = atoi("12345);
 
-		if(row[4] && row[5])
+//		if(row[4] && row[5])
 		{
 			char buffer[1024];
-			sprintf(buffer, "%s:%s", row[4], row[5]);
+			sprintf(buffer, "%s:%s", "rpcuser", "rpcpassword");
 
 			base64_encode(coind->rpc.credential, buffer);
 			coind->rpc.coind = coind;
 		}
 
-		if(row[8]) coind->reward = atof(row[8]);
-		if(row[9]) coind->price = atof(row[9]);
-		if(row[11]) coind->txmessage = atoi(row[11]);
-		if(row[12]) coind->enable = atoi(row[12]);
-		if(row[13]) coind->auto_ready = atoi(row[13]);
-		if(row[15]) coind->pool_ttf = atoi(row[15]);
+		coind->reward = atof("0.00000596");
+		coind->price = atof("0.00000001");
+		coind->txmessage = atoi("1");
+		coind->enable = atoi("1");
+		coind->auto_ready = atoi("1");
+		coind->pool_ttf = atoi("10");
 
-		if(row[16]) strcpy(coind->charity_address, row[16]);
-		if(row[17]) coind->charity_amount = atof(row[17]);
-		if(row[18]) coind->charity_percent = atof(row[18]);
-		if(row[19]) coind->reward_mul = atof(row[19]);
+		strcpy(coind->charity_address, "");
+		coind->charity_amount = atof("0");
+		coind->charity_percent = atof("0");
+		coind->reward_mul = atof("1");
 
-		if(row[21]) coind->isaux = atoi(row[21]);
+		coind->isaux = atoi("0");
 
-		if(row[22] && row[23]) coind->actual_ttf = min(atoi(row[22]), atoi(row[23]));
+		coind->actual_ttf = min(atoi(row[22]), atoi(row[23]));
 		else if(row[22]) coind->actual_ttf = atoi(row[22]);
-		coind->actual_ttf = min(coind->actual_ttf, 120);
-		coind->actual_ttf = max(coind->actual_ttf, 20);
+		coind->actual_ttf = 120;
 
-		if(row[24]) coind->usememorypool = atoi(row[24]);
-		if(row[25]) coind->hasmasternodes = atoi(row[25]);
+		coind->usememorypool = atoi("0");
+		coind->hasmasternodes = atoi("0");
 
-		if(row[26]) strcpy(coind->algo, row[26]);
-		if(row[27]) strcpy(coind->symbol2, row[27]); // if pool + aux, prevent double submit
+		strcpy(coind->algo, "sha256");
+		strcpy(coind->symbol2, ""); // if pool + aux, prevent double submit
 
-		if(row[28]) coind->rpc.curl = atoi(row[28]) != 0;
-		if(row[29]) coind->rpc.ssl = atoi(row[29]) != 0;
-		if(row[30]) strcpy(coind->rpc.cert, row[30]);
-
+		//if(row[28]) coind->rpc.curl = atoi(row[28]) != 0;
+		//if(row[29]) coind->rpc.ssl = atoi(row[29]) != 0;
+		//if(row[30]) strcpy(coind->rpc.cert, row[30]);
+/*
 		if(row[31]) strcpy(coind->account, row[31]);
 		if(row[32]) coind->multialgos = atoi(row[32]);
 		if(row[33] && atoi(row[33]) > 0) g_stratum_max_cons = atoi(row[33]);
@@ -329,7 +332,7 @@ void db_update_coinds(YAAMP_DB *db)
 			if (strcmp(coind->symbol, "VSX") == 0) coind->oldmasternodes = true;
 			if (strcmp(coind->symbol, "XLR") == 0) coind->oldmasternodes = true;
 		}
-
+*/
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		//coind->touch = true;
