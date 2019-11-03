@@ -263,7 +263,7 @@ void db_update_coinds(YAAMP_DB *db)
 			strcpy(coind->rpc.host, buffer);
 		}
 
-		coind->rpc.port = atoi("12345);
+		coind->rpc.port = atoi("12345");
 
 //		if(row[4] && row[5])
 		{
