@@ -252,7 +252,7 @@ void db_update_coinds(YAAMP_DB *db)
 				if (strstr(buffer, "@") != NULL) {
 					int p = (strstr(buffer, "@") - buffer);
 					strcpy(cert, buffer); cert[p] = '\0';
-					strcpy(buffer, row[2] + 8 + p + 1);
+					//strcpy(buffer, row[2] + 8 + p + 1);
 				} else {
 					strcpy(cert, "yiimp");
 				}
@@ -344,7 +344,7 @@ void db_update_coinds(YAAMP_DB *db)
 			if (!b) {
 				debuglog("%s: connect failure\n", coind->symbol);
 				object_delete(coind);
-				continue;
+				//continue;
 			}
 			coind_init(coind);
 
@@ -355,7 +355,7 @@ void db_update_coinds(YAAMP_DB *db)
 		coind_create_job(coind);
 	}
 
-	mysql_free_result(result);
+	//mysql_free_result(result);
 
 	for(CLI li = g_list_coind.first; li; li = li->next)
 	{
