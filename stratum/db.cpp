@@ -380,6 +380,7 @@ void db_update_coinds(YAAMP_DB *db)
 
 void db_update_remotes(YAAMP_DB *db)
 {
+	return;
 	if(!db) return;
 
 	db_query(db, "select id, speed/1000000, host, port, username, password, time, price, renterid from jobs where active and ready and algo='%s' order by time", g_stratum_algo);
@@ -511,6 +512,7 @@ void db_update_remotes(YAAMP_DB *db)
 
 void db_update_renters(YAAMP_DB *db)
 {
+	return;
 	if(!db) return;
 
 	db_query(db, "select id, balance, updated from renters");
@@ -611,6 +613,7 @@ void db_store_stats(YAAMP_DB *db, YAAMP_CLIENT *client, json_value *stats)
 	if (throughput < 0.) throughput = 0.;
 	if (khashes < 0. || intensity < 0.) return;
 
+	/*
 	db_query(db, "INSERT INTO benchmarks("
 		"time, algo, type, device, arch, vendorid, os, driver,"
 		"client, khps, freq, memf, realfreq, realmemf, power, plimit, "
@@ -620,4 +623,5 @@ void db_store_stats(YAAMP_DB *db, YAAMP_CLIENT *client, json_value *stats)
 		t, g_current_algo->name, stype, sdev, sarch, svid, sos, sdriver,
 		sclient, khashes, freq, memf, realfreq, realmemf, power, plimit,
 		intensity, throughput, client->userid);
+		*/
 }
