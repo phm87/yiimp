@@ -72,6 +72,7 @@ static void clean_html(char* string)
 
 void db_query(YAAMP_DB *db, const char *format, ...)
 {
+	return;
 	va_list arglist;
 	va_start(arglist, format);
 	if(!db) return;
