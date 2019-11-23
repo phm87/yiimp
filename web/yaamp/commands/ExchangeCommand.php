@@ -224,6 +224,11 @@ class ExchangeCommand extends CConsoleCommand
 			if (!arraySafeVal($info,'success',0) || !is_array($info['return'])) echo "error\n";
 			else echo("yobit btc: ".json_encode($info['return']['funds']['btc'])."\n");
 		}
+		if (!empty(EXCH_ATOMICDEX)) {
+			$balance = atomicdex_api_user('my_balance', array("coin"=>"BTC"));
+			if (!isset($balance->BTC)) echo "zebitex error ".json_encode($balance)."\n";
+			else echo("zebitex: BTC balance: ".json_encode($balance->BTC)."\n");
+		}
 		// only one secret key
 		$balance = empoex_api_user('account/balance','BTC');
 		if ($balance) echo("empoex btc: ".json_encode($balance['available'])."\n");
