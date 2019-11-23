@@ -382,6 +382,24 @@ function updateRawcoins()
 		}
 	}
 
+	if (!exchange_get('AtomicDEX', 'disabled')) {
+		$list = atomicdex_api_query('get_enabled_coins');
+		// getcoins (call from mm1 not found into mm2)
+		// $list_kick = atomicdex_api_query('coins_needed_for_kick_start');
+		if(is_array($list) && !empty($list))
+		{
+			dborun("UPDATE markets SET deleted=true WHERE name='AtomicDEX'");
+			foreach($list as $item) {
+				$address = $item['address'];
+				$ticker = $item['ticker'];
+				
+				$symbol = strtoupper($ticker);
+				updateRawCoin('AtomicDEX', $symbol);
+				//debuglog("AtomicDEX: $symbol $address");
+			}
+		}
+	}
+	
 	if (!exchange_get('tradesatoshi', 'disabled')) {
 		$data = tradesatoshi_api_query('getcurrencies');
 		if(is_object($data) && !empty($data->result))
