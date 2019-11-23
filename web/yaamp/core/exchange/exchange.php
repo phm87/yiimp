@@ -43,6 +43,7 @@ require_once("coinsmarkets.php");
 require_once("cryptowatch.php");
 require_once("stocksexchange.php");
 require_once("tradesatoshi.php");
+require_once("atomicdex-api.php");
 
 /* Format an exchange coin Url */
 function getMarketUrl($coin, $marketName)
@@ -132,6 +133,8 @@ function getMarketUrl($coin, $marketName)
 		$url = "https://tradesatoshi.com/Exchange?market={$symbol}_{$base}";
 	else if($market == 'yobit')
 		$url = "https://yobit.net/en/trade/{$symbol}/{$base}";
+	else if($market == 'AtomicDEX')
+		$url = "";
 	else
 		$url = "";
 
