@@ -385,18 +385,21 @@ function updateRawcoins()
 	if (!exchange_get('AtomicDEX', 'disabled')) {
 		// all coins compatible with AtomicDEX
 		// getcoins (call from mm1 not found into mm2)
-		$ch = curl_init('https://raw.githubusercontent.com/jl777/coins/master/coins');
-		$res = curl_exec($ch);
-		$list = json_decode($res);
+		$url = 'https://raw.githubusercontent.com/jl777/coins/master/coins';
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                $res = curl_exec($curl);
+		$list = json_decode(trim($res));
 		// $list_kick = atomicdex_api_query('coins_needed_for_kick_start');
-		if(is_array($list) && !empty($list))
+		if(!empty($list))
 		{
 			dborun("UPDATE markets SET deleted=true WHERE name='AtomicDEX'");
 			$mm2coins = atomicdex_api_query('get_enabled_coins');
 			foreach($list as $item) {
-				if ($item['mm2'] != 1 || $item['coin'] == "BTC") continue;
-				$ticker = $item['coin'];
-				$fname = $item['fname'];
+				if (!isset($item->mm2) || $item->mm2 != 1 || $item->coin == "BTC") continue;
+				$ticker = $item->coin;
+				$fname = $item->fname;
 
 				$symbol = strtoupper($ticker);
 				updateRawCoin('AtomicDEX', $symbol, $fname);
