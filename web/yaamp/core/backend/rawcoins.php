@@ -392,6 +392,7 @@ function updateRawcoins()
 		if(is_array($list) && !empty($list))
 		{
 			dborun("UPDATE markets SET deleted=true WHERE name='AtomicDEX'");
+			$mm2coins = atomicdex_api_query('get_enabled_coins');
 			foreach($list as $item) {
 				if ($item['mm2'] != 1 || $item['coin'] == "BTC") continue;
 				$ticker = $item['coin'];
@@ -400,6 +401,32 @@ function updateRawcoins()
 				$symbol = strtoupper($ticker);
 				updateRawCoin('AtomicDEX', $symbol, $fname);
 				//debuglog("AtomicDEX: $symbol $fname");
+				
+				if (is_object($mm2coins) && !empty($mm2coins->result)) {
+					$found = false;
+					foreach ($mm2coins->result as $coin) {
+						if ($coin->ticker == $symbol) {
+							// Ok, it is already enabled
+							$found = true;
+							break;
+						}
+					}
+					if ($found == false)	{
+						$ch2 = curl_init('https://raw.githubusercontent.com/jl777/coins/master/electrums/'.$ticker);
+						$res2 = curl_exec($ch2);
+						$list2 = json_decode($res2);
+						if(is_array($list2) && !empty($list2))	{
+							$params = array('coin' => $ticker);
+							$servers = array();
+							foreach($list2 as $s)	{
+								$servers.push(array('url'=>$s->url));
+							}
+							atomicdex_api_query('electrum', $params);
+						}
+					}
+				}
+			}
+		}
 			}
 		}
 	}
@@ -473,7 +500,7 @@ function updateRawCoin($marketname, $symbol, $name='unknown')
 				}
 			}
 		}
-
+		
 		if (in_array($marketname, array('nova','askcoin','binance','bitz','coinexchange','coinsmarkets','cryptobridge','hitbtc'))) {
 			// don't polute too much the db with new coins, its better from exchanges with labels
 			return;
