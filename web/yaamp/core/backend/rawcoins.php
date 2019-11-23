@@ -427,8 +427,6 @@ function updateRawcoins()
 				}
 			}
 		}
-			}
-		}
 	}
 	
 	if (!exchange_get('tradesatoshi', 'disabled')) {
