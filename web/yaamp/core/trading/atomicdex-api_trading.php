@@ -14,10 +14,11 @@
 }
  function doAtomicDEXTrading($quick=false)
 {
+	 // TO DO
 	$exchange = 'AtomicDEX';
 	$updatebalances = true;
  	if (exchange_get($exchange, 'disabled')) return;
- 	$data = atomicdex_api_user('my_balance');
+ 	$data = atomicdex_api_user('my_balance', array('coin' => 'BTC'));
 	if (empty($data)) return;
  	$savebalance = getdbosql('db_balances', "name='$exchange'");
  	foreach($data as $balance)
@@ -49,6 +50,7 @@
 	}
  	if (!YAAMP_ALLOW_EXCHANGE) return;
  	// real trading, todo..
+	 return;
 	         $flushall = rand(0, 8) == 0;
         if($quick) $flushall = false;
         $min_btc_trade = exchange_get($exchange, 'min_btc_trade', 0.00050000); // minimum allowed by the exchange
