@@ -4,13 +4,31 @@ function atomicdex_api_query($method, $params=array(), $returnType='object')
 {
 //    curl --url "http://127.0.0.1:7783" --data "{\"userpass\":\"$userpass\",\"method\":\"my_balance\",\"coin\":\"MORTY\"}"
 	require_once('/etc/yiimp/keys.php');
-  $uri = "http://127.0.0.1:7783";
-  
-  $json_body = "{\"userpass\"=\"".EXCH_ATOMICDEX."\"";
-  foreach ($params as $p => $v)   {
-    $json_body .= ",";
-    $json_body .= "\"$p\":\"$v\"";
-    }
+	$uri = "http://127.0.0.1:7783";
+
+	$json_body = "{\"userpass\"=\"".EXCH_ATOMICDEX_RPCPASSWORD."\"";
+	if ($method == "electrum")	{
+	  foreach ($params as $p => $v)   {
+    		$json_body .= ",";
+		if ($p == "servers")	{
+			$first = true;
+			$json_body .= "[";
+			foreach ($v as $pp => $vv)   {
+				if ($first == false)	$json_body .= ",";
+				$json_body .= "{\"$pp\":\"$vv\"}";
+				$first = false;
+				}
+			}
+		  else
+	    		$json_body .= "\"$p\":\"$v\"";
+    		}
+	}
+	else	{
+		foreach ($params as $p => $v)   {
+    			$json_body .= ",";
+    			$json_body .= "\"$p\":\"$v\"";
+    			}
+	}
   $json_body .= "}";
   $ch = curl_init($uri);
   curl_setopt($ch, CURLOPT_POST, 1);
