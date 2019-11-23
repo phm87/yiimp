@@ -416,11 +416,11 @@ function updateRawcoins()
 						$res2 = curl_exec($ch2);
 						$list2 = json_decode($res2);
 						if(is_array($list2) && !empty($list2))	{
-							$params = array('coin' => $ticker);
 							$servers = array();
 							foreach($list2 as $s)	{
 								$servers.push(array('url'=>$s->url));
 							}
+							$params = array('coin' => $ticker, 'servers' => $servers);
 							atomicdex_api_query('electrum', $params);
 						}
 					}
