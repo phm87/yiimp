@@ -709,6 +709,20 @@ class SiteController extends CommonController
 		if(!$this->admin) return;
 		$this->renderPartial('user_results');
 	}
+	
+	/////////////////////////////////////////////////
+	
+	public function actionOrderbookAtomicDEX()
+	{
+		if(!$this->admin) return;
+		$this->render('OrderbookAtomicDEX');
+	}
+
+	public function actionOrderbookAtomicDEX_results()
+	{
+		if(!$this->admin) return;
+		$this->renderPartial('OrderbookAtomicDEX_results');
+	}
 
 	/////////////////////////////////////////////////
 
