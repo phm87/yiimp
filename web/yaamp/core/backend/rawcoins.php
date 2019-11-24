@@ -397,7 +397,7 @@ function updateRawcoins()
 			dborun("UPDATE markets SET deleted=true WHERE name='AtomicDEX'");
 			$mm2coins = atomicdex_api_query('get_enabled_coins');
 			foreach($list as $item) {
-				if (!isset($item->mm2) || $item->mm2 != 1 || $item->coin == "BTC") continue;
+				if (!isset($item->mm2) || $item->mm2 != 1) continue;
 				$ticker = $item->coin;
 				$fname = $item->fname;
 
@@ -416,6 +416,7 @@ function updateRawcoins()
 					}
 					if ($found == false)	{
 						$ch2 = curl_init('https://raw.githubusercontent.com/jl777/coins/master/electrums/'.$ticker);
+						curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
 						$res2 = curl_exec($ch2);
 						$list2 = json_decode($res2);
 						if(is_array($list2) && !empty($list2))	{
