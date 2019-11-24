@@ -5,14 +5,13 @@ $coin = null;
 if($symbol == 'all')
 {
 	echo "Please select a coin";
-return;
-	//$users = getdbolist('db_accounts', "balance>.001 OR id IN (SELECT DISTINCT userid FROM workers) ORDER BY balance DESC");
+	return;
 }
 else
 {
 	$coin = getdbosql('db_coins', "symbol=:symbol", array(':symbol'=>$symbol));
 	if(!$coin) return;
-	$ob = atomicdex_api_query('orderbook', array('coin' => $symbol));
+	$ob = atomicdex_api_query('orderbook', array('base' => $symbol, 'rel' => 'BTC'));
 	if(!$coin) return;
 }
 echo <<<end
