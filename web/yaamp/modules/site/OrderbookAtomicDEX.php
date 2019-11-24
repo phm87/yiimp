@@ -5,7 +5,7 @@ echo getAdminSideBarLinks();
 $symbol = getparam('symbol');
 $coins = "<option value='all'>-all-</option>";
 $list = getdbolist('db_coins', "enable AND (".
-	"id IN (SELECT DISTINCT coinid FROM markets WHERE name = 'AtomicDEX')");
+	"id IN (SELECT DISTINCT coinid FROM markets WHERE name = 'AtomicDEX'))");
 foreach($list as $coin)
 {
 	if($coin->symbol == $symbol)
