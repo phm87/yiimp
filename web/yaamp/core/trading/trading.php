@@ -160,7 +160,7 @@ function runExchange($exchangeName=false)
 				break;
 
 			case 'AtomicDEX':
-				//doAtomicDEXTrading(true);
+				doAtomicDEXTrading(true);
 				updateAtomicDEXMarkets();
 				break;
 			
