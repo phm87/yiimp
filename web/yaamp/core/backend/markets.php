@@ -1899,6 +1899,7 @@ function updateAtomicDEXMarkets()
 
 		//debuglog("$exchange: $symbol price set to ".bitcoinvaluetoa($market->price));
 		$market->pricetime = time();
+		$market->deposit_address = $m->address;
 		$market->save();
 
 		if (empty($coin->price2)) {
