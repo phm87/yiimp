@@ -3,8 +3,8 @@ JavascriptFile("/yaamp/ui/js/jquery.metadata.js");
 JavascriptFile("/yaamp/ui/js/jquery.tablesorter.widgets.js");
 echo getAdminSideBarLinks();
 $symbol = getparam('symbol');
-$coins = "<option value='all'>-all-</option>";
-$list = getdbolist('db_coins', "enable AND (".
+$coins = "";
+$list = getdbolist('db_coins', "installed AND (".
 	"id IN (SELECT DISTINCT coinid FROM markets WHERE name = 'AtomicDEX'))");
 foreach($list as $coin)
 {
