@@ -1853,20 +1853,15 @@ function updateAtomicDEXMarkets()
 	$count = (int) dboscalar("SELECT count(id) FROM markets WHERE name LIKE '$exchange%'");
 	if ($count == 0) return;
 
-/*
-	$coins = getdbolist('db_coins', "installed and id in (select distinct coinid from markets WHERE name LIKE '$exchange%')");
-	foreach($coins as $coin)
-	{
-*/
 	$list = atomicdex_api_query('get_enabled_coins');
-	if(!is_object($list) || !$list->success || !is_array($list->result)) return;
+	if(!is_object($list) || !is_array($list->result)) return;
 	foreach($list->result as $m)
 	{
 		$symbol = $m->ticker;
 		$data = atomicdex_api_query('orderbook', array("base"=>$symbol,"rel"=>"BTC"));
-		if(!is_object($data)) continue;
 
 		$price_ask = 0;
+		if (isset($data->asks))
 		foreach($data->asks as $mm)
 		{
 			if ($mm->price > $price_ask) // later: check volume
@@ -1874,9 +1869,10 @@ function updateAtomicDEXMarkets()
 		}
 		
 		$price_bid = 0;
-		foreach($data->asks as $mm)
+		if (isset($data->bids))
+		foreach($data->bids as $mm)
 		{
-			if ($mm->price < $price_bid) // later: check volume
+			if ($price_bid == 0 || $mm->price < $price_bid) // later: check volume
 				$price_bid = $mm->price;
 		}
 
