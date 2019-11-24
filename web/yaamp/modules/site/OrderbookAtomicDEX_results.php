@@ -1,6 +1,7 @@
 <?php
 /////////////////////////////////////////////////////////////////////////////////////////////////
 $symbol = getparam('symbol');
+$market = getparam('market');
 $coin = null;
 if($symbol == 'all')
 {
@@ -11,10 +12,17 @@ else
 {
 	$coin = getdbosql('db_coins', "symbol=:symbol", array(':symbol'=>$symbol));
 	if(!$coin) return;
-	$ob = atomicdex_api_query('orderbook', array('base' => $symbol, 'rel' => 'BTC'));
+	$coinm = getdbosql('db_coins', "symbol=:symbol", array(':symbol'=>$market));
+        if(!$coinm) return;
+	if ($symbol == $market)	{
+		echo "Please select a coin that is different from market ($symbol/$market doesn't exist).";
+		return;
+	}
+	$ob = atomicdex_api_query('orderbook', array('base' => $symbol, 'rel' => $market));
 	if(!$coin) return;
 }
 echo <<<end
+<h2>Orderbooks of $symbol/$market on AtomicDEX</h2>
 <div align="right" style="margin-top: -20px; margin-bottom: 6px;">
 <input class="search" type="search" data-column="all" style="width: 140px;" placeholder="Search..." />
 </div>
@@ -99,3 +107,37 @@ echo "</tbody>";
 
 echo "</table>";
 //echo "<p><a href='/site/bonususers'>1% bonus</a></p>";
+
+echo <<<end
+<h2>$symbol prices on CEX</h2>
+<div id="markets" style="width:30%;">
+<table class="dataGrid">
+<thead><tr>
+<th width="100">Market</th>
+<th width="100">Bid (BTC)</th>
+<th width="100">Ask (BTC)</th>
+</tr></thead><tbody>
+end;
+$list = getdbolist('db_markets', "coinid={$coin->id} AND NOT deleted ORDER BY disabled, priority DESC, price DESC");
+$bestmarket = getBestMarket($coin);
+foreach($list as $market)
+{
+        $marketurl = '#';
+        $price = bitcoinvaluetoa($market->price);
+        $price2 = bitcoinvaluetoa($market->price2);
+        $marketurl = getMarketUrl($coin, $market->name);
+        $rowclass = 'ssrow';
+        if($bestmarket && $market->id == $bestmarket->id) $rowclass .= ' bestmarket';
+        if($market->disabled) $rowclass .= ' disabled';
+        echo '<tr class="'.$rowclass.'">';
+        echo '<td><b><a href="'.$marketurl.'" target=_blank>';
+        echo $market->name;
+        echo '</a></b></td>';
+        $updated = "last updated: ".strip_tags(datetoa2($market->pricetime));
+        echo '<td title="'.$updated.'">'.$price.'</td>';
+        echo '<td title="'.$updated.'">'.$price2.'</td>';
+        echo '</td>';
+        echo "</tr>";
+}
+
+echo "</tbody></table></div>";
