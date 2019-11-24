@@ -6,18 +6,19 @@ function atomicdex_api_query($method, $params=array(), $returnType='object')
 	require_once('/etc/yiimp/keys.php');
 	$uri = "http://127.0.0.1:7783";
 
-	$json_body = "{\"userpass\"=\"".EXCH_ATOMICDEX_RPCPASSWORD."\"";
+	$json_body = "{\"userpass\"=\"".EXCH_ATOMICDEX_RPCPASSWORD."\",\"method\":\"".$method."\"";
 	if ($method == "electrum")	{
 	  foreach ($params as $p => $v)   {
     		$json_body .= ",";
 		if ($p == "servers")	{
 			$first = true;
-			$json_body .= "[";
+			$json_body .= "\"servers\":[";
 			foreach ($v as $pp => $vv)   {
 				if ($first == false)	$json_body .= ",";
-				$json_body .= "{\"$pp\":\"$vv\"}";
+				$json_body .= "{\"url\":\"".$vv['url']."\"}";
 				$first = false;
 				}
+			$json_body .= "]";
 			}
 		  else
 	    		$json_body .= "\"$p\":\"$v\"";
