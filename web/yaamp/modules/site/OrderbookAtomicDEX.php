@@ -5,8 +5,7 @@ echo getAdminSideBarLinks();
 $symbol = getparam('symbol');
 $coins = "<option value='all'>-all-</option>";
 $list = getdbolist('db_coins', "enable AND (".
-	"id IN (SELECT DISTINCT coinid FROM accounts WHERE balance>0.0001) ".
-	"OR id IN (SELECT DISTINCT coinid from earnings) ) ORDER BY symbol");
+	"id IN (SELECT DISTINCT coinid FROM markets WHERE name = 'AtomicDEX')";
 foreach($list as $coin)
 {
 	if($coin->symbol == $symbol)
@@ -15,6 +14,7 @@ foreach($list as $coin)
 		$coins .= '<option value="'.$coin->symbol.'">'.$coin->symbol.'</option>';
 }
 echo <<<end
+<h1>AtomicDEX Orderbooks</h1>
 <div align="right" style="margin-top: -14px; margin-bottom: -6px; margin-right: 140px;">
 Select coin: <select id='coin_select'>$coins</select>&nbsp;
 </div>
@@ -29,7 +29,7 @@ $(function()
 	$('#coin_select').change(function(event)
 	{
 		var symbol = $('#coin_select').val();
-		window.location.href = '/site/user?symbol='+symbol;
+		window.location.href = '/site/OrderbookAtomicDEX?symbol='+symbol;
 	});
 	main_refresh();
 });
@@ -47,7 +47,7 @@ function main_error()
 function main_refresh()
 {
 	var symbol = $('#coin_select').val();
-	var url = "/site/user_results?symbol="+symbol;
+	var url = "/site/OrderbookAtomicDEX_results?symbol="+symbol;
 	clearTimeout(main_timeout);
 	$.get(url, '', main_ready).error(main_error);
 }
