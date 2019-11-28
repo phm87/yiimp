@@ -21,7 +21,6 @@ foreach($list as $coin)
                 $coins2 .= '<option value="'.$coin->symbol.'">'.$coin->symbol.'</option>';
 }
 echo <<<end
-<h1>AtomicDEX Orderbooks</h1>
 <div align="right" style="margin-top: -14px; margin-bottom: -6px; margin-right: 140px;">
 Select coin: <select id='coin_select'>$coins</select> Select Market: <select id='coin_select2'>$coins2</select>&nbsp;
 </div>
