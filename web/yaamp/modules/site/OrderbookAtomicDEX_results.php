@@ -22,7 +22,44 @@ else
 	if(!$coin) return;
 }
 echo <<<end
-<h2>Orderbooks of $symbol/$market on AtomicDEX</h2>
+<script>
+
+function showSwapAmountDialog(symbol, market, amount, price)
+{
+//alert();
+        var priceE = document.getElementById("input_sell_price");
+        var amountE = document.getElementById("input_sell_amount");
+        $("#dlgaddr").html(symbol);
+        amountE.value = amount;
+        priceE.value = price;
+        $("#swap-amount-dialog").dialog(
+        {
+        autoOpen: true,
+                width: 400,
+                height: 240,
+                modal: true,
+                title: 'Buy '+market+': Swap '+symbol+' to '+market,
+                buttons:
+                {
+                        "Send / Sell": function()
+                        {
+                                amount = $('#input_sell_amount').val();
+                                price = $('#input_sell_price').val();
+                                window.location.href = '/market/sellto2?id=AtomicDEX&amount='+amount+'&price='+price;
+                        },
+                }
+        });
+        return false;
+}
+</script>
+<div id="swap-amount-dialog" style="display: none;">
+<br>
+<!--Address: <span id="dlgaddr">xxxxxxxxxxxx</span><br><br>-->
+Amount: <input type=text id="input_sell_amount" value="1"><br>
+Price: <input type=text id="input_sell_price" value="1">
+<br>
+</div>
+<h1>Orderbooks of $symbol/$market on AtomicDEX</h1>
 <div align="right" style="margin-top: -20px; margin-bottom: 6px;">
 <input class="search" type="search" data-column="all" style="width: 140px;" placeholder="Search..." />
 </div>
@@ -80,6 +117,7 @@ foreach($ob->asks as $o)
 	echo '<td align=right>'.$o->age.'</td>';
 
 	echo '<td class="actions" align="right">';
+	echo '<a href="javascript:showSwapAmountDialog(\''.$market.'\', \''.$symbol.'\', \''.$o->maxvolume.'\', \''.$o->price.'\')">Buy '.$symbol.'</a>';
 	//echo '<a href="/site/banuser?id='.$user->id.'"><span class="red">BAN</span></a>';
 	echo '</td>';
 	echo '</tr>';
@@ -98,6 +136,7 @@ foreach($ob->bids as $o)
 	echo '<td align=right>'.$o->age.'</td>';
 
 	echo '<td class="actions" align="right">';
+	echo '<a href="javascript:showSwapAmountDialog(\''.$symbol.'\', \''.$market.'\', \''.$o->maxvolume.'\', \''.$o->price.'\')">Sell '.$symbol.'</a>';
 	//echo '<a href="/site/banuser?id='.$user->id.'"><span class="red">BAN</span></a>';
 	echo '</td>';
 	echo '</tr>';
