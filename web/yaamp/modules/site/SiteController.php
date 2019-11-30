@@ -30,6 +30,68 @@ class SiteController extends CommonController
 
 	/////////////////////////////////////////////////
 
+        public function actionCancel_all_orders()
+        {
+                if(!$this->admin) return;
+                $res = atomicdex_api_query('cancel_all_orders',array("cancel_by" => array("type" => "All")));
+                if (isset($res->result))  {
+                        $this->redirect("/site/OrderbookAtomicDEX?symbol=$buy&market=$sell&newuuid=".$res->result->uuid);
+                        return;
+                        }
+                echo "Error";
+                return;
+        }
+
+        public function actionSwap()
+        {
+                if(!$this->admin) return;
+
+//              $market = getdbo('db_markets', getiparam('id'));
+                $amount = getparam('amount');
+                $price = getparam('price');
+                $rel = getparam('sell');
+                $base = getparam('buy');
+                $method = getparam('method');
+
+//              echo "amount $amount $price $buy $sell";
+
+                if ($base != "RICK" && $base != "MORTY")        {
+                        echo "RICK MORTY Test Limit reached: You can't sell or buy something else than RICK or MORTY sorry";
+                        return;
+                        }
+
+                if ($rel != "RICK" && $rel != "MORTY")  {
+                        echo "RICK MORTY Test Limit reached: You can't sell or buy something else than RICK or MORTY sorry";
+                        return;
+                        }
+                if ($amount > 5)        {
+                        echo "RICK MORTY Test Limit reached: Amount can't be above 5 sorry";
+                        return;
+                        }
+                if ($price <=0) {
+                        echo "Price can't be negative or null.";
+                        return;
+                        }
+                if ($amount <= 0)       {
+                        echo "Amount can't be negative or null.";
+                        return;
+                        }
+                $false = false;
+/*
+                $res = atomicdex_api_query('setprice', array('base' => $sell, 'rel' => $buy, 'price' => $price,
+                        'volume' => $amount, 'cancel_previous' => "false")); //, 'max' => '0', 'cancel_previous' => '0'));
+                //              var_dump($res);
+*/
+                $res = atomicdex_api_query($method, array('base' => $base, 'rel' => $rel, 'price' => $price,
+                        'volume' => $amount)); //, 'cancel_previous' => "false")); //, 'max' => '0', 'cancel_previous' => '0'));
+                if (isset($res->result->uuid))  {
+                        $this->redirect("/site/OrderbookAtomicDEX?symbol=$rel&market=$base&newuuid=".$res->result->uuid);
+                        return;
+                        }
+                echo "Error";
+                return;
+        }
+
 	public function actionCreate()
 	{
 		if(!$this->admin) return;
@@ -711,6 +773,18 @@ class SiteController extends CommonController
 	}
 	
 	/////////////////////////////////////////////////
+	
+        public function actionMyHistoryAtomicDEX()
+        {
+                if(!$this->admin) return;
+                $this->render('MyHistoryAtomicDEX');
+        }
+	
+        public function actionMyHistoryAtomicDEX_results()
+        {
+                if(!$this->admin) return;
+                $this->renderPartial('MyHistoryAtomicDEX_results');
+        }
 	
 	public function actionOrderbookAtomicDEX()
 	{
