@@ -134,7 +134,7 @@ function getMarketUrl($coin, $marketName)
 	else if($market == 'yobit')
 		$url = "https://yobit.net/en/trade/{$symbol}/{$base}";
 	else if($market == 'AtomicDEX')
-		$url = "";
+		$url = "/site/OrderbookAtomicDEX?symbol={$symbol}&market={$base}";
 	else
 		$url = "";
 
